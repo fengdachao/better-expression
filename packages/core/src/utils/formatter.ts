@@ -146,9 +146,13 @@ export function stripHtml(html: string): string {
  * 转义HTML特殊字符
  */
 export function escapeHtml(text: string): string {
-  const div = document.createElement('div')
-  div.textContent = text
-  return div.innerHTML
+  // 使用字符串替换而不是DOM操作，避免在Node.js环境中使用document
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 }
 
 /**

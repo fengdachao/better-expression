@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 
-export interface Toast {
+export interface ToastMessage {
   id: string
   title?: string
   description?: string
@@ -11,8 +11,8 @@ export interface Toast {
 }
 
 export interface UseToastReturn {
-  toasts: Toast[]
-  toast: (toast: Omit<Toast, 'id'>) => void
+  toasts: ToastMessage[]
+  toast: (toast: Omit<ToastMessage, 'id'>) => void
   dismiss: (toastId: string) => void
   dismissAll: () => void
 }
@@ -20,13 +20,13 @@ export interface UseToastReturn {
 let toastCount = 0
 
 export function useToast(): UseToastReturn {
-  const [toasts, setToasts] = useState<Toast[]>([])
+  const [toasts, setToasts] = useState<ToastMessage[]>([])
 
-  const toast = useCallback((toastData: Omit<Toast, 'id'>) => {
+  const toast = useCallback((toastData: Omit<ToastMessage, 'id'>) => {
     const id = `toast-${++toastCount}`
     const duration = toastData.duration ?? 5000
 
-    const newToast: Toast = {
+    const newToast: ToastMessage = {
       ...toastData,
       id
     }

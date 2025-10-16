@@ -5,10 +5,9 @@ import type {
   ImproveResult, 
   ImproveOptions, 
   Config, 
-  StorageAdapter,
-  APIError,
-  ValidationError 
+  StorageAdapter
 } from '@better-sentence/core'
+import { APIError, ValidationError } from '@better-sentence/core'
 import { createTextImprover } from '@better-sentence/core'
 
 export interface UseImproverOptions {
