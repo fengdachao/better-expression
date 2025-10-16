@@ -161,7 +161,7 @@ export class DeepSeekProvider implements AIProvider {
     } catch (error) {
       clearTimeout(timeoutId)
       
-      if (error.name === 'AbortError') {
+      if (error instanceof Error && error.name === 'AbortError') {
         throw new APIError('Request timeout. Please try again.', 'TIMEOUT')
       }
       

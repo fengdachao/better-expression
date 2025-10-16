@@ -1,7 +1,7 @@
 // 配置相关
 export * from './config/types'
 export * from './config/storage'
-export * from './config/defaults'
+export { DEFAULT_CONFIG, STYLE_OPTIONS, DEEPSEEK_CONFIG, API_KEY_GUIDE } from './config/defaults'
 
 // AI相关
 export * from './ai/providers'
