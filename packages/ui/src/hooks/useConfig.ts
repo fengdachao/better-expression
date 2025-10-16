@@ -39,7 +39,23 @@ export function useConfig({
       setError(null)
       
       const storedConfig = await storage.get<Config>(STORAGE_KEY)
-      const mergedConfig = { ...DEFAULT_CONFIG, ...storedConfig }
+      
+      // Check for environment variable API key (only in browser)
+      let envApiKey: string | undefined
+      if (typeof window !== 'undefined' && typeof process !== 'undefined' && process.env) {
+        // In Next.js client components, only NEXT_PUBLIC_ prefixed env vars are available
+        envApiKey = process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY
+        console.log('Environment API key found:', envApiKey ? 'Yes' : 'No')
+        console.log('Full process.env:', process.env)
+        console.log('NEXT_PUBLIC_DEEPSEEK_API_KEY:', process.env.NEXT_PUBLIC_DEEPSEEK_API_KEY)
+      }
+      
+      // Merge config with priority: stored config > env variable > defaults
+      const mergedConfig = { 
+        ...DEFAULT_CONFIG, 
+        ...(envApiKey ? { apiKey: envApiKey } : {}),
+        ...storedConfig 
+      }
       
       setConfig(mergedConfig)
     } catch (err) {
