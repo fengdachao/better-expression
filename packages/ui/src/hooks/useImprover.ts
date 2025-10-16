@@ -9,6 +9,7 @@ import type {
 } from '@better-sentence/core'
 import { APIError, ValidationError } from '@better-sentence/core'
 import { createTextImprover } from '@better-sentence/core'
+import { useConfig } from './useConfig'
 
 export interface UseImproverOptions {
   storage: StorageAdapter
@@ -32,6 +33,9 @@ export function useImprover({
   const [result, setResult] = useState<ImproveResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  
+  // Use useConfig hook to get configuration (includes environment variables)
+  const { config, loading: configLoading } = useConfig({ storage })
 
   const improve = useCallback(async (
     text: string, 
@@ -42,8 +46,10 @@ export function useImprover({
     setResult(null)
 
     try {
-      // Get configuration from storage
-      const config = await storage.get<Config>('better-sentence-config')
+      // Wait for config to load
+      if (configLoading) {
+        throw new Error('Configuration is still loading. Please wait.')
+      }
       
       if (!config) {
         throw new Error('Please configure your API key in settings first')
@@ -53,8 +59,13 @@ export function useImprover({
         throw new Error('API key is required. Please check your settings.')
       }
 
+      // Ensure config has all required fields
+      if (!config.model || !config.defaultStyle || config.temperature === undefined) {
+        throw new Error('Configuration is incomplete. Please check your settings.')
+      }
+
       // Create text improver instance
-      const improver = createTextImprover(config)
+      const improver = createTextImprover(config as Config)
 
       // Prepare options with defaults from config
       const improveOptions: ImproveOptions = {
